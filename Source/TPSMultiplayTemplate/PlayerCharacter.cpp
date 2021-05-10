@@ -174,6 +174,16 @@ void APlayerCharacter::MoveRight(float Value)
 	}
 }
 
+// 曲線射撃模擬
+void APlayerCharacter::TraceArcSimulationCVer(float targetDistance, FVector targetLocation)
+{
+
+
+
+
+
+} // void TraceArcSimulationCVer()
+
 void APlayerCharacter::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
