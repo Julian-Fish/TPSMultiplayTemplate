@@ -111,7 +111,7 @@ void APlayerCharacter::BeginPlay()
 		pCharMoveComp->JumpZVelocity = 600.f;
 	} // end if()
 
-	this->SetActorScale3D(FVector(0.3f, 0.3f, 0.3f));
+	// this->SetActorScale3D(FVector(0.3f, 0.3f, 0.3f));
 
 }
 
