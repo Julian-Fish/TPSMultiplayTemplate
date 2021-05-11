@@ -111,7 +111,7 @@ void APlayerCharacter::BeginPlay()
 		pCharMoveComp->JumpZVelocity = 600.f;
 	} // end if()
 
-	this->SetActorScale3D(FVector(0.3f, 0.3f, 0.3f));
+	// this->SetActorScale3D(FVector(0.3f, 0.3f, 0.3f));
 
 }
 
@@ -173,6 +173,16 @@ void APlayerCharacter::MoveRight(float Value)
 		AddMovementInput(GetActorRightVector(), Value);
 	}
 }
+
+// 曲線射撃模擬
+void APlayerCharacter::TraceArcSimulationCVer(float targetDistance, FVector targetLocation)
+{
+
+
+
+
+
+} // void TraceArcSimulationCVer()
 
 void APlayerCharacter::TurnAtRate(float Rate)
 {

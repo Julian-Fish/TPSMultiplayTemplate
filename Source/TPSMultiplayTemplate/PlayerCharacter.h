@@ -57,13 +57,15 @@ class TPSMULTIPLAYTEMPLATE_API APlayerCharacter : public ACharacter
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	//	class UAnimMontage* FireAnimation;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character|Variables", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character|Spline", meta = (AllowPrivateAccess = "true"))
 		class UStaticMesh* BeamMesh;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character|Variables", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character|Spline", meta = (AllowPrivateAccess = "true"))
 		class UMaterial* BeamMaterial;
 
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character|Variables", meta = (AllowPrivateAccess = "true"))
+		float CurveModeFireRange;				// 曲線射撃最大距離
 
 
 
@@ -136,6 +138,10 @@ protected:
 
 	// 左右移動
 	void MoveRight(float Val);
+
+	// 拋射模擬
+	void TraceArcSimulationCVer(float targetDistance, FVector targetLocation);
+
 
 	/**
 	 * Called via input to turn at a given rate.
