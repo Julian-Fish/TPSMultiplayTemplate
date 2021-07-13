@@ -17,22 +17,24 @@ class TPSMULTIPLAYTEMPLATE_API UNWGameInstance : public UGameInstance
 
 public:
 	UNWGameInstance();
+	//~UNWGameInstance();
 
 protected:
 	virtual void Init() override;
 
-	UFUNCTION(BlueprintCallable)
-		virtual void CreateServer();
+	UFUNCTION(BlueprintCallable, Category = "Session_NW")
+		virtual void CreateServerWithName(FString sessionName);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Session_NW")
 		virtual bool JoinServer();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Session_NW")
 		virtual void FindServer();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Session_NW")
 		virtual void DestroyServer();
 
+	FName _sessionName;
 	IOnlineSessionPtr _session;
 	TSharedPtr<FOnlineSessionSearch> _sessionSearch;
 

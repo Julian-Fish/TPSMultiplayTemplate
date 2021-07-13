@@ -12,6 +12,12 @@ UNWGameInstance::UNWGameInstance()
 
 }
 
+UNWGameInstance::~UNWGameInstance()
+{
+	//UE_LOG_FISH("Quit Game");
+	//_session->DestroySession(_sessionName);
+}
+
 void UNWGameInstance::Init()
 {
 	UE_LOG_FISH("Init GameInstance");
@@ -33,7 +39,7 @@ void UNWGameInstance::Init()
 	}
 }
 
-void UNWGameInstance::CreateServer()
+void UNWGameInstance::CreateServerWithName(FString sessionName)
 {
 	FUniqueNetIdRepl userid = GetFirstGamePlayer()->GetPreferredUniqueNetId();
 
@@ -45,10 +51,11 @@ void UNWGameInstance::CreateServer()
 	SessionSettings.bUsesPresence = true;
 	SessionSettings.NumPublicConnections = 4;
 
-	if (_session->CreateSession(*userid, FName("Fish Test Session"), SessionSettings))
+	if (_session->CreateSession(*userid, FName(*sessionName), SessionSettings))
 	{
 		// create successed
-		UE_LOG_SCREEN("create session succeeded");
+		UE_LOG_SCREEN("create session succeeded. Name: %s", *sessionName);
+		_sessionName = FName(*sessionName);
 	}
 	else
 	{
@@ -94,7 +101,7 @@ bool UNWGameInstance::JoinServer()
 
 void UNWGameInstance::DestroyServer()
 {
-	_session->DestroySession(FName("Fish Test Session"));
+	_session->DestroySession(_sessionName);
 }
 
 
@@ -104,7 +111,7 @@ void UNWGameInstance::_onCreateSessionComplete(FName serverName, bool succeeded)
 	{
 		UE_LOG_FISH("create session(%s) succeeded", *(serverName.ToString()));
 		//UGameplayStatics::OpenLevel(GetWorld(), TEXT("FirstPersonExampleMap"), true, "listen");
-		GetWorld()->ServerTravel("/Game/FirstPersonCPP/Maps/FirstPersonExampleMap?listen");
+		//GetWorld()->ServerTravel("/Game/FirstPersonCPP/Maps/FirstPersonExampleMap?listen");
 	}
 }
 
