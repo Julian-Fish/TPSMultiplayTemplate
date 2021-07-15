@@ -5,8 +5,28 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include <Interfaces/OnlineSessionInterface.h>
+#include <OnlineSessionSettings.h>
+#include "FindSessionsCallbackProxy.h"
 #include "NWGameInstance.generated.h"
 
+//USTRUCT(BlueprintType)
+//struct FBlueprintSessionResult;
+
+//USTRUCT(BlueprintType)
+//struct FBlueprintSessionResult
+//{
+//	GENERATED_USTRUCT_BODY()
+//
+//		FOnlineSessionSearchResult OnlineResult;
+//};
+//USTRUCT(BlueprintType)
+//struct FSessionResultWithName_NW
+//{
+//	GENERATED_USTRUCT_BODY()
+//
+//	FOnlineSessionSearchResult SearchResult;
+//	FName SessionName;
+//};
 /**
  * 
  */
@@ -17,26 +37,30 @@ class TPSMULTIPLAYTEMPLATE_API UNWGameInstance : public UGameInstance
 
 public:
 	UNWGameInstance();
-	//~UNWGameInstance();
+	~UNWGameInstance();
 
 protected:
 	virtual void Init() override;
 
 	UFUNCTION(BlueprintCallable, Category = "Session_NW")
-		virtual void CreateServerWithName(FString sessionName);
+	virtual void CreateSessionWithName_NW(FString sessionName);
 
 	UFUNCTION(BlueprintCallable, Category = "Session_NW")
-		virtual bool JoinServer();
+	virtual bool JoinServer();
 
 	UFUNCTION(BlueprintCallable, Category = "Session_NW")
-		virtual void FindServer();
+	virtual TArray<FBlueprintSessionResult> FindSessions_NW();
 
 	UFUNCTION(BlueprintCallable, Category = "Session_NW")
-		virtual void DestroyServer();
+	virtual void DestroyServer();
+
+	UFUNCTION(BlueprintCallable, Category = "Session_NW")
+	virtual FString GetSessionName(const FBlueprintSessionResult& result);
 
 	FName _sessionName;
 	IOnlineSessionPtr _session;
 	TSharedPtr<FOnlineSessionSearch> _sessionSearch;
+	TSharedPtr<FOnlineSessionSettings> SessionSettings;
 
 	// complete event
 	void _onCreateSessionComplete(FName serverName, bool succeeded);

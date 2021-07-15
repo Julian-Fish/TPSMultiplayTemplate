@@ -3,9 +3,9 @@
 
 #include "NWGameInstance.h"
 #include <OnlineSubsystem.h>
-#include <OnlineSessionSettings.h>
 #include "Helper/LogHelper.h"
 #include "Engine/EngineBaseTypes.h"
+#include "OnlineSubsystemTypes.h"
 
 UNWGameInstance::UNWGameInstance()
 {
@@ -28,7 +28,7 @@ void UNWGameInstance::Init()
 		if (_session.IsValid())
 		{
 			_session->OnCreateSessionCompleteDelegates.AddUObject(this, &UNWGameInstance::_onCreateSessionComplete);
-			_session->OnFindSessionsCompleteDelegates.AddUObject(this, &UNWGameInstance::_onFindSessionComplete);
+			//_session->OnFindSessionsCompleteDelegates.AddUObject(this, &UNWGameInstance::_onFindSessionComplete);
 			_session->OnJoinSessionCompleteDelegates.AddUObject(this, &UNWGameInstance::_onJoinSessionComplete);
 			_session->OnDestroySessionCompleteDelegates.AddUObject(this, &UNWGameInstance::_onDestroySessionComplete);
 		}
@@ -39,19 +39,21 @@ void UNWGameInstance::Init()
 	}
 }
 
-void UNWGameInstance::CreateServerWithName(FString sessionName)
+void UNWGameInstance::CreateSessionWithName_NW(FString sessionName)
 {
 	FUniqueNetIdRepl userid = GetFirstGamePlayer()->GetPreferredUniqueNetId();
+	//FOnlineSessionSetting nameSetting = new FOnlineSessionSetting<int>(FName("julianfish"));
 
-	FOnlineSessionSettings SessionSettings;
-	SessionSettings.bAllowJoinInProgress = true;
-	SessionSettings.bIsDedicated = false;
-	SessionSettings.bIsLANMatch = true;
-	SessionSettings.bShouldAdvertise = true;
-	SessionSettings.bUsesPresence = true;
-	SessionSettings.NumPublicConnections = 4;
+	SessionSettings = MakeShareable(new FOnlineSessionSettings());
+	SessionSettings->bAllowJoinInProgress = true;
+	SessionSettings->bIsDedicated = false;
+	SessionSettings->bIsLANMatch = true;
+	SessionSettings->bShouldAdvertise = true;
+	SessionSettings->bUsesPresence = true;
+	SessionSettings->NumPublicConnections = 4;
+	SessionSettings->Set(FName("SESSION_NAME"), 5, EOnlineDataAdvertisementType::Type::ViaOnlineServiceAndPing);
 
-	if (_session->CreateSession(*userid, FName(*sessionName), SessionSettings))
+	if (_session->CreateSession(*userid, FName(*sessionName), *SessionSettings))
 	{
 		// create successed
 		UE_LOG_SCREEN("create session succeeded. Name: %s", *sessionName);
@@ -64,9 +66,11 @@ void UNWGameInstance::CreateServerWithName(FString sessionName)
 	}
 }
 
-void UNWGameInstance::FindServer()
+TArray<FBlueprintSessionResult> UNWGameInstance::FindSessions_NW()
 {
 	FUniqueNetIdRepl userid = GetFirstGamePlayer()->GetPreferredUniqueNetId();
+	TArray<FBlueprintSessionResult> results;
+	//TArray<FSessionResultWithName_NW> namedSessionResults;
 	//FOnlineSessionSearch SessionSearchSetting;
 	_sessionSearch = MakeShareable(new FOnlineSessionSearch());
 
@@ -77,11 +81,30 @@ void UNWGameInstance::FindServer()
 	if (_session->FindSessions(*userid, _sessionSearch.ToSharedRef()))
 	{
 		// found sessions
+		//for (FOnlineSessionSearchResult m : _sessionSearch->SearchResults)
+		//{
+		//	FSessionResultWithName_NW n;
+		//	
+		//	n.SearchResult = m;
+		//	n.SessionName = ((FNamedOnlineSession)(m.Session)).SessionName;
+		//	namedSessionResults.Add(n);
+		//}
+		//return namedSessionResults;
+
+		for (FOnlineSessionSearchResult m : _sessionSearch->SearchResults)
+		{
+			FBlueprintSessionResult n;
+			n.OnlineResult = m;
+			results.Add(n);
+		}
+
+		return results;
 	}
 	else
 	{
 		// cannot found sessions
 		_onFindSessionComplete(false);
+		return results;
 	}
 }
 
@@ -104,6 +127,19 @@ void UNWGameInstance::DestroyServer()
 	_session->DestroySession(_sessionName);
 }
 
+FString UNWGameInstance::GetSessionName(const FBlueprintSessionResult& result)
+{
+	UE_LOG_FISH("session: %s", *result.OnlineResult.Session.OwningUserName);
+
+	for (auto m : result.OnlineResult.Session.SessionSettings.Settings)
+	{
+		
+		UE_LOG_FISH("key: %s", *m.Key.ToString());
+		UE_LOG_FISH("value: %s", *m.Value.ToString());
+	}
+
+	return "";
+}
 
 void UNWGameInstance::_onCreateSessionComplete(FName serverName, bool succeeded)
 {
