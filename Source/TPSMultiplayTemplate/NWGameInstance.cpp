@@ -27,10 +27,10 @@ void UNWGameInstance::Init()
 
 		if (_session.IsValid())
 		{
-			_session->OnCreateSessionCompleteDelegates.AddUObject(this, &UNWGameInstance::_onCreateSessionComplete);
+			//_session->OnCreateSessionCompleteDelegates.AddUObject(this, &UNWGameInstance::_onCreateSessionComplete);
 			//_session->OnFindSessionsCompleteDelegates.AddUObject(this, &UNWGameInstance::_onFindSessionComplete);
 			//_session->OnJoinSessionCompleteDelegates.AddUObject(this, &UNWGameInstance::_onJoinSessionComplete);
-			_session->OnDestroySessionCompleteDelegates.AddUObject(this, &UNWGameInstance::_onDestroySessionComplete);
+			//_session->OnDestroySessionCompleteDelegates.AddUObject(this, &UNWGameInstance::_onDestroySessionComplete);
 		}
 	}
 	else
