@@ -57,6 +57,9 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Session_NW")
 	virtual FString GetSessionName(const FBlueprintSessionResult& result);
 
+	UFUNCTION(BlueprintCallable, Category = "Session_NW")
+	virtual void PrintSessionPlayer(const FBlueprintSessionResult& result);
+
 	FName _sessionName;
 	IOnlineSessionPtr _session;
 	TSharedPtr<FOnlineSessionSearch> _sessionSearch;

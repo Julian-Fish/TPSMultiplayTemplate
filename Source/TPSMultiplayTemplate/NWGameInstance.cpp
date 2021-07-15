@@ -29,7 +29,7 @@ void UNWGameInstance::Init()
 		{
 			_session->OnCreateSessionCompleteDelegates.AddUObject(this, &UNWGameInstance::_onCreateSessionComplete);
 			//_session->OnFindSessionsCompleteDelegates.AddUObject(this, &UNWGameInstance::_onFindSessionComplete);
-			_session->OnJoinSessionCompleteDelegates.AddUObject(this, &UNWGameInstance::_onJoinSessionComplete);
+			//_session->OnJoinSessionCompleteDelegates.AddUObject(this, &UNWGameInstance::_onJoinSessionComplete);
 			_session->OnDestroySessionCompleteDelegates.AddUObject(this, &UNWGameInstance::_onDestroySessionComplete);
 		}
 	}
@@ -46,12 +46,13 @@ void UNWGameInstance::CreateSessionWithName_NW(FString sessionName)
 
 	SessionSettings = MakeShareable(new FOnlineSessionSettings());
 	SessionSettings->bAllowJoinInProgress = true;
+	SessionSettings->bAllowJoinViaPresence = true;
 	SessionSettings->bIsDedicated = false;
 	SessionSettings->bIsLANMatch = true;
 	SessionSettings->bShouldAdvertise = true;
 	SessionSettings->bUsesPresence = true;
 	SessionSettings->NumPublicConnections = 4;
-	SessionSettings->Set(FName("SESSION_NAME"), 5, EOnlineDataAdvertisementType::Type::ViaOnlineServiceAndPing);
+	SessionSettings->Set(FName("SESSION_NAME"), sessionName, EOnlineDataAdvertisementType::Type::ViaOnlineServiceAndPing);
 
 	if (_session->CreateSession(*userid, FName(*sessionName), *SessionSettings))
 	{
@@ -129,16 +130,24 @@ void UNWGameInstance::DestroyServer()
 
 FString UNWGameInstance::GetSessionName(const FBlueprintSessionResult& result)
 {
-	UE_LOG_FISH("session: %s", *result.OnlineResult.Session.OwningUserName);
 
 	for (auto m : result.OnlineResult.Session.SessionSettings.Settings)
 	{
 		
-		UE_LOG_FISH("key: %s", *m.Key.ToString());
-		UE_LOG_FISH("value: %s", *m.Value.ToString());
+		if (m.Key == FName("SESSION_NAME"))
+		{
+			return m.Value.Data.ToString();
+		}
+		//UE_LOG_FISH("key: %s", *m.Key.ToString());
+		//UE_LOG_FISH("value: %s", *m.Value.Data.ToString());
 	}
 
 	return "";
+}
+
+void UNWGameInstance::PrintSessionPlayer(const FBlueprintSessionResult& result)
+{
+	UE_LOG_FISH("num of connections: %d", result.OnlineResult.Session.NumOpenPublicConnections);
 }
 
 void UNWGameInstance::_onCreateSessionComplete(FName serverName, bool succeeded)
@@ -146,7 +155,7 @@ void UNWGameInstance::_onCreateSessionComplete(FName serverName, bool succeeded)
 	if (succeeded)
 	{
 		UE_LOG_FISH("create session(%s) succeeded", *(serverName.ToString()));
-		//UGameplayStatics::OpenLevel(GetWorld(), TEXT("FirstPersonExampleMap"), true, "listen");
+		UGameplayStatics::OpenLevel(GetWorld(), TEXT("Lobby"), true, "listen");
 		//GetWorld()->ServerTravel("/Game/FirstPersonCPP/Maps/FirstPersonExampleMap?listen");
 	}
 }
