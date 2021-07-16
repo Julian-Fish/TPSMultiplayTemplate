@@ -9,24 +9,6 @@
 #include "FindSessionsCallbackProxy.h"
 #include "NWGameInstance.generated.h"
 
-//USTRUCT(BlueprintType)
-//struct FBlueprintSessionResult;
-
-//USTRUCT(BlueprintType)
-//struct FBlueprintSessionResult
-//{
-//	GENERATED_USTRUCT_BODY()
-//
-//		FOnlineSessionSearchResult OnlineResult;
-//};
-//USTRUCT(BlueprintType)
-//struct FSessionResultWithName_NW
-//{
-//	GENERATED_USTRUCT_BODY()
-//
-//	FOnlineSessionSearchResult SearchResult;
-//	FName SessionName;
-//};
 /**
  * 
  */
@@ -38,6 +20,8 @@ class TPSMULTIPLAYTEMPLATE_API UNWGameInstance : public UGameInstance
 public:
 	UNWGameInstance();
 	~UNWGameInstance();
+
+	const FName GetCurrentSessionName() { return _sessionName; }
 
 protected:
 	virtual void Init() override;
@@ -70,4 +54,5 @@ protected:
 	void _onFindSessionComplete(bool succeeded);
 	void _onJoinSessionComplete(FName serverName, EOnJoinSessionCompleteResult::Type Result);
 	void _onDestroySessionComplete(FName serverName, bool succeeded);
+
 };
