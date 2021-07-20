@@ -16,15 +16,7 @@ void AGameModeBase_Lobby::PostLogin(APlayerController* NewPlayer)
 
 }
 
-void AGameModeBase_Lobby::StartPlay()
-{
-	Super::StartPlay();
-
-	
-	UpdateSessionName(FName("julianfish test"));
-}
-
-void AGameModeBase_Lobby::UpdateSessionName(FName hostName)
+void AGameModeBase_Lobby::UpdateHostName(FName hostName)
 {
 	FUniqueNetIdRepl userid = GetGameInstance()->GetFirstGamePlayer()->GetPreferredUniqueNetId();
 
@@ -33,6 +25,7 @@ void AGameModeBase_Lobby::UpdateSessionName(FName hostName)
 		IOnlineSessionPtr _session = _subsystem->GetSessionInterface();
 		if (_session.IsValid())
 		{
+			// make settings
 			TSharedPtr<FOnlineSessionSettings> SessionSettings = MakeShareable(new FOnlineSessionSettings());
 			SessionSettings->bAllowJoinInProgress = true;
 			SessionSettings->bAllowJoinViaPresence = true;
@@ -47,10 +40,8 @@ void AGameModeBase_Lobby::UpdateSessionName(FName hostName)
 			if (namedSession != NULL)
 			{
 				namedSession->SessionSettings = *SessionSettings;
-				//UE_LOG_FISH("update session: %d", _session->UpdateSession(GameSession->SessionName, *SessionSettings) ? 1 : 0);
 			}
-			UE_LOG_FISH("update session name");
+			UE_LOG_FISH("update host name");
 		}
-		//SessionSettings->Set(FName("SESSION_NAME"), sessionName, EOnlineDataAdvertisementType::Type::ViaOnlineServiceAndPing);
 	}
 }

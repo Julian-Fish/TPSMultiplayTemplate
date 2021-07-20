@@ -15,9 +15,8 @@ class TPSMULTIPLAYTEMPLATE_API AGameModeBase_Lobby : public AGameMode
 {
 	GENERATED_BODY()
 	virtual void PostLogin(APlayerController* NewPlayer) override;
-	virtual void StartPlay() override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void UpdateSessionName(FName sessionName);
+	virtual void UpdateHostName(FName hostName);
 
 };

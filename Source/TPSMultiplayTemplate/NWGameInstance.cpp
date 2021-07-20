@@ -136,7 +136,7 @@ FString UNWGameInstance::GetSessionName(const FBlueprintSessionResult& result)
 	for (auto m : result.OnlineResult.Session.SessionSettings.Settings)
 	{
 		
-		if (m.Key == FName("SESSION_NAME"))
+		if (m.Key == FName("HOST_NAME"))
 		{
 			return m.Value.Data.ToString();
 		}
